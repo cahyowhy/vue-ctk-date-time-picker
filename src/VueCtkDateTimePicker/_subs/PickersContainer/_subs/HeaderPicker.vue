@@ -63,6 +63,18 @@
             {{ min }}
           </span>
         </TransitionGroup>
+        <span>:</span>
+        <TransitionGroup
+          :name="transitionName"
+          class="dots-text time-number header-picker-second flex justify-content-left"
+        >
+          <span
+            v-for="sec in [dateTime.format('ss')]"
+            :key="sec"
+          >
+            {{ sec }}
+          </span>
+        </TransitionGroup>
       </div>
       <div
         v-else-if="!noTime && value"
@@ -132,10 +144,11 @@
         const date = this.value
           ? this.range
             ? (this.value.end || this.value.start)
-              ? moment(this.value.end ? this.value.end : this.value.start, 'YYYY-MM-DD HH:mm')
+              ? moment(this.value.end ? this.value.end : this.value.start, 'YYYY-MM-DD HH:mm:ss')
               : moment()
-            : moment(this.value, 'YYYY-MM-DD HH:mm')
+            : moment(this.value, 'YYYY-MM-DD HH:mm:ss')
           : moment()
+
         return date
       },
       year () {

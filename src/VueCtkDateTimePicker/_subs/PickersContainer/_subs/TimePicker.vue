@@ -13,7 +13,7 @@
       class="time-picker-column flex-1 flex flex-direction-column text-center"
       @scroll="noScrollEvent
         ? null
-        : column.type === 'hours' ? onScrollHours($event) : column.type === 'minutes' ? onScrollMinutes($event) : onScrollApms($event)
+        : column.type === 'hours' ? onScrollHours($event) : column.type === 'minutes' ? onScrollMinutes($event) : column.type === 'seconds' ? onScrollSeconds($event) : onScrollApms($event)
       "
     >
       <div>
@@ -109,6 +109,7 @@
       return {
         hour: null,
         minute: null,
+        second: null,
         apm: null,
         oldvalue: this.value,
         columnPadding: {},
@@ -144,6 +145,9 @@
         const twoDigit = this.format.includes('mm') || this.format.includes('MM')
         return ArrayMinuteRange(0, 60, twoDigit, this.minuteInterval, this._disabledMinutes)
       },
+      seconds () {
+        return ArrayMinuteRange(0, 60, true, this.minuteInterval, this._disabledMinutes)
+      },
       apms () {
         const ampm = this.isTwelveFormat
           ? this.minTime
@@ -166,6 +170,7 @@
         return [
           { type: 'hours', items: this.hours },
           { type: 'minutes', items: this.minutes },
+          { type: 'seconds', items: this.seconds },
           ...(this.apms ? [{ type: 'apms', items: this.apms }] : [])
         ]
       },
@@ -305,6 +310,12 @@
         this.minute = minute === 60 ? 59 : minute
         this.emitValue()
       }, 100),
+      onScrollSeconds: debounce(function (scroll) {
+        const value = this.getValue(scroll)
+        const second = value * this.minuteInterval
+        this.second = second === 60 ? 59 : second
+        this.emitValue()
+      }, 100),
       onScrollApms: debounce(function (scroll) {
         const value = this.getValue(scroll)
         if (this.apms && this.apms[value] && this.apm !== this.apms[value].value) {
@@ -319,7 +330,9 @@
           ? this.hour
           : type === 'minutes'
             ? this.minute
-            : this.apm ? this.apm : null) === value
+              : type === 'seconds'
+                ? this.second
+                : this.apm ? this.apm : null) === value
       },
       isHoursDisabled (h) {
         const hourToTest = this.apmType
@@ -348,6 +361,7 @@
           : hourToSet
 
         this.minute = parseInt(moment(this.value, this.format).format('mm'))
+        this.second = parseInt(moment(this.value, this.format).format('ss'))
         this.apm = this.apms && this.value
           ? this.hour > 12
             ? this.apms.length > 1 ? this.apms[1].value : this.apms[0].value
@@ -372,7 +386,7 @@
       },
       initPositionView () {
         this.noScrollEvent = true
-        const containers = ['hours', 'minutes']
+        const containers = ['hours', 'minutes', 'seconds']
         if (this.apms) containers.push('apms')
         setTimeout(() => {
           containers.forEach((container) => {
@@ -404,6 +418,8 @@
           this.hour = item
         } else if (type === 'minutes') {
           this.minute = item
+        } else if (type === 'seconds') {
+          this.second = item
         } else if (type === 'apms' && this.apm !== item) {
           const newHour = item === 'pm' || item === 'PM' ? this.hour + 12 : this.hour - 12
           this.hour = newHour
@@ -418,7 +434,8 @@
           : tmpHour
         hour = (hour < 10 ? '0' : '') + hour
         const minute = this.minute ? (this.minute < 10 ? '0' : '') + this.minute : '00'
-        const time = `${hour}:${minute}`
+        const second = this.second ? (this.second < 10 ? '0' : '') + this.second : '00'
+        const time = `${hour}:${minute}:${second}`
         this.$emit('input', time)
       }
     }
