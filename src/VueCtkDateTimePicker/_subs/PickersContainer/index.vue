@@ -82,11 +82,13 @@
           :button-color="buttonColor"
           :button-now-translation="buttonNowTranslation"
           :only-time="onlyTime"
+          :show-close-btn="showCloseBtn"
           :no-button-now="noButtonNow"
           :range="range"
           :has-button-validate="hasButtonValidate"
           @validate="$emit('validate')"
           @now="setNow"
+          @close="$emit('close')"
         />
       </div>
     </div>
@@ -112,6 +114,7 @@
     props: {
       value: { type: [String, Object], default: null },
       visible: { type: Boolean, required: true, default: false },
+      showCloseBtn: { type: Boolean, default: false },
       position: { type: String, default: 'bottom' },
       inline: { type: Boolean, default: false },
       dark: { type: Boolean, default: false },

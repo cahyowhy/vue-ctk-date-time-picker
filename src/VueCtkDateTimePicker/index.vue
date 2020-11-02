@@ -54,6 +54,7 @@
       :min-date="minDate"
       :max-date="maxDate"
       :format="format"
+      :show-close-btn="showCloseBtn"
       :no-weekends-days="noWeekendsDays"
       :disabled-weekly="disabledWeekly"
       :has-button-validate="hasButtonValidate"

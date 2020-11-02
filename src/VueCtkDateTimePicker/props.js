@@ -10,6 +10,7 @@ export default {
   buttonColor: { type: String, default: null },
   dark: { type: Boolean, default: false },
   overlay: { type: Boolean, default: false },
+  showCloseBtn: { type: Boolean, default: false },
   inline: { type: Boolean, default: false },
   position: { type: String, default: null },
   locale: { type: String, default: getDefaultLocale() },
