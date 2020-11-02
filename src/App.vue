@@ -196,6 +196,7 @@
                 :error="demo.options.error"
                 :hint="demo.options.hint"
                 :open="demo.options.open"
+                show-close-btn
                 :dark="darkMode || demo.options.dark"
                 :overlay="demo.options.overlay"
                 :position="demo.options.position"
